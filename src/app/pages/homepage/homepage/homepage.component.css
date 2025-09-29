@@ -124,13 +124,13 @@
   ::ng-deep .add-btn {
     background-color: #AB47BC !important;
     color: #fff !important;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    margin-top: auto;
-    transition: transform 0.3s ease;
+    border: none !important;
+    padding: 8px 15px !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    margin-top: auto !important;
+    transition: transform 0.3s ease !important;
     border-color: #AB47BC !important;
   }
 
