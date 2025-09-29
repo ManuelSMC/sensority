@@ -54,7 +54,7 @@ npm install -g @angular/cli@19.2.15
 ```
 
 
-#Verify the installation:
+# Verify the installation:
 ```bash
 ng version
 ```
