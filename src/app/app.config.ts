@@ -5,6 +5,7 @@ import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import Aura from '@primeuix/themes/aura';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,5 +21,9 @@ export const appConfig: ApplicationConfig = {
                 preset: Aura
             },
     }),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: true,
+      registrationStrategy: 'registerWhenStable:3000'
+    })
   ]
 };

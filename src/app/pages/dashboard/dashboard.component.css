@@ -1,0 +1,84 @@
+.dashboard{max-width:1200px;margin:0 auto;padding:24px}
+
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.brand{font-weight:700;letter-spacing:.5px;color:var(--text);background:linear-gradient(90deg, var(--accent), var(--accent-2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.actions{display:flex;gap:8px}
+.chip{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:999px;padding:8px 12px}
+.chip.alt{background:transparent;border-color:var(--accent);color:var(--accent)}
+.actions .logout{background:transparent;border-color:var(--border);color:var(--text)}
+
+.hero{padding:24px;margin-bottom:16px}
+.hero h1{margin:0 0 8px 0}
+.hero p{margin:0;color:var(--text-muted)}
+
+.filters{padding:16px;margin:16px 0}
+.filters-row{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.filters .field{flex:1 1 280px;min-width:240px}
+.filters .field.actions{display:flex;flex:0 1 auto;align-items:center;gap:10px;flex-wrap:wrap}
+.filters .field label{display:block;margin-bottom:6px;color:var(--text-muted);font-size:13px}
+.filters .secondary{background:transparent;border-color:var(--border);color:var(--text-muted)}
+.filters .accent{background:var(--accent);border-color:var(--accent)}
+.filters .hint{margin-top:8px;color:var(--text-muted);font-size:12px}
+
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:16px 0 24px}
+.stat{padding:20px}
+.stat-label{color:var(--text-muted);font-size:14px;margin-bottom:6px}
+.stat-value{font-size:28px;font-weight:600}
+
+.charts{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px}
+.chart{padding:0;overflow:hidden}
+.chart-header{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text-muted)}
+.chart-body{height:260px;padding:8px}
+
+.table{padding:0;overflow:hidden}
+.table-header{display:flex;justify-content:space-between;align-items:center;padding:16px;border-bottom:1px solid var(--border)}
+.legend{display:flex;align-items:center;gap:12px;color:var(--text-muted)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
+.dot.temp{background:var(--accent)}
+.dot.hum{background:var(--accent-2)}
+
+.table table{width:100%}
+.table thead{background:var(--surface)}
+.table th,.table td{text-align:left}
+.table p-paginator{display:block;padding:8px 12px}
+
+/* Ensure PrimeNG buttons render with our dark theme when in this component */
+::ng-deep .p-button.accent { background: linear-gradient(180deg, var(--accent), #5b66e8) !important; border-color: var(--accent) !important; color: #fff !important; }
+::ng-deep .p-button.secondary { background: transparent !important; border-color: var(--border) !important; color: var(--text-muted) !important; }
+::ng-deep .p-button.logout { background: transparent !important; border-color: var(--border) !important; color: var(--text) !important; }
+
+/* IoT Interval button styling */
+/* Custom IoT control (non-PrimeNG) */
+.iot-dial { display:flex; align-items:center; gap:12px; padding:8px 12px; border-radius:12px; background: linear-gradient(180deg, var(--surface), var(--surface-2)); border:1px solid var(--border); box-shadow:0 8px 24px var(--shadow); cursor:pointer; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; flex:0 0 auto }
+.iot-dial:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(0,0,0,.4); border-color: var(--accent); }
+.iot-dial.loading { pointer-events:none; opacity:.95; }
+.iot-dial .dial-circle { position:relative; width:56px; height:56px; }
+.iot-dial .dial-circle svg { width:56px; height:56px; transform: rotate(-90deg); }
+.iot-dial .dial-circle .track { fill:none; stroke: rgba(255,255,255,0.06); stroke-width: 8; }
+.iot-dial .dial-circle .progress { fill:none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset .3s ease; }
+.iot-dial .dial-circle .center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.iot-dial .title { font-size:11px; color: var(--text-muted); }
+.iot-dial .value { font-size:16px; font-weight:700; }
+.iot-dial .value .unit { font-size:12px; margin-left:2px; color: var(--text-muted); }
+.iot-dial .controls { display:flex; align-items:center; }
+.iot-dial .tip { font-size:11px; color: var(--text-muted); }
+
+/* flip animation for value */
+.iot-dial .value { perspective: 300px; }
+.iot-dial .value.flip { animation: flipNum .3s ease; }
+@keyframes flipNum { 0% { transform: rotateX(0deg); } 50% { transform: rotateX(90deg); opacity:.8; } 100% { transform: rotateX(0deg); opacity:1; } }
+
+.card{transition:transform .2s ease, box-shadow .2s ease}
+.card:hover{transform:translateY(-2px); box-shadow:0 14px 36px rgba(0,0,0,.4)}
+
+@media (max-width: 900px){
+	.charts{grid-template-columns:1fr}
+	.chart-body{height:220px}
+}
+
+@media (max-width: 520px){
+	.dashboard{padding:16px}
+	.stat{padding:16px}
+	.stat-value{font-size:24px}
+	.chart-body{height:200px}
+}

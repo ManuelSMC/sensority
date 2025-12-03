@@ -1,22 +1,107 @@
+.dark-overlay,
+.dark-overlay .p-datepicker,
+.dark-overlay .p-datepicker-content,
+.dark-overlay .p-datepicker-group {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+.dark-overlay .p-datepicker-header { background: var(--surface-2) !important; border-bottom: 1px solid var(--border) !important; }
+.dark-overlay .p-datepicker-title, .dark-overlay .p-datepicker-prev, .dark-overlay .p-datepicker-next { color: var(--text) !important; }
+.dark-overlay .p-datepicker-calendar td { background: var(--surface) !important; }
+.dark-overlay .p-datepicker-calendar td > span { color: var(--text) !important; }
+.dark-overlay .p-datepicker-calendar td > span:hover { background: rgba(109,121,255,.15) !important; }
+.dark-overlay .p-datepicker-calendar td > span.p-highlight { background: var(--accent) !important; color: #fff !important; }
 :root {
-  --p-background-color: #FFF1F6 !important;
-}
-html, body {
-  background-color: #FFF1F6 !important;
-  margin: 0;
-  padding: 0;
-}
-.container {
-  background-color: #FFF1F6 !important;
+  --bg: #0f1220;
+  --surface: #171b2b;
+  --surface-2: #1f2537;
+  --text: #e6e8ef;
+  --text-muted: #a0a8bd;
+  --accent: #6d79ff;
+  --accent-2: #4fd1c5;
+  --border: #2a3046;
+  --shadow: rgba(0,0,0,0.35);
 }
 
-.p-card {
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  width: 30% !important;
-  padding: 0 !important;
-  margin: 0 !important;
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html, body {
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+.card {
+  background: linear-gradient(180deg, var(--surface), var(--surface-2));
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px var(--shadow);
+}
+
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+thead th { color: var(--text-muted); font-weight: 600; background: var(--surface); }
+tbody tr:hover { background-color: rgba(109, 121, 255, 0.08); }
+
+/* PrimeNG dark theme fixes: overlays, inputs, buttons */
+.p-inputtext { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+.p-inputtext:focus, .p-inputtext.p-focus { box-shadow: 0 0 0 2px rgba(109,121,255,.35); outline: none; }
+
+/* Overlays should never be transparent */
+.p-datepicker,
+.p-dropdown-panel,
+.p-overlaypanel,
+.p-dialog,
+.p-menu {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 10px 30px var(--shadow) !important;
+  z-index: 1100 !important;
+}
+.p-datepicker-mask { background: rgba(0,0,0,0.4) !important; }
+
+/* Ensure paginator dropdown panel is opaque */
+body .p-dropdown-panel { background: var(--surface) !important; border-color: var(--border) !important; }
+body .p-dropdown-panel .p-dropdown-items { background: var(--surface) !important; }
+body .p-dropdown-panel .p-dropdown-item { color: var(--text) !important; }
+body .p-dropdown-panel .p-dropdown-item:hover { background: rgba(109,121,255,.15) !important; }
+body .p-dropdown-panel .p-dropdown-item.p-highlight { background: var(--accent) !important; color: #fff !important; }
+.p-datepicker .p-datepicker-header { background: var(--surface-2) !important; border-bottom: 1px solid var(--border) !important; }
+.p-datepicker .p-datepicker-group, .p-datepicker .p-datepicker-calendar { background: var(--surface) !important; }
+.p-datepicker .p-datepicker-title, .p-datepicker .p-datepicker-prev, .p-datepicker .p-datepicker-next { color: var(--text) !important; }
+.p-dropdown-item, .p-menuitem-link { color: var(--text) !important; }
+.p-dropdown-item:hover, .p-menuitem-link:hover { background: rgba(109,121,255,.15) !important; }
+.p-dropdown-items { background: var(--surface) !important; }
+.p-datepicker table td { background: var(--surface) !important; }
+.p-datepicker table td > span { color: var(--text) !important; }
+.p-datepicker table td > span:hover { background: rgba(109,121,255,.15) !important; }
+.p-datepicker table td > span.p-highlight { background: var(--accent) !important; color: #fff !important; }
+
+/* Buttons */
+.p-button { border-radius: 10px; }
+.p-button.action, .p-button.accent {
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,.35) !important;
+}
+.p-button.action:hover, .p-button.accent:hover { filter: brightness(1.08) !important; }
+.p-button.action .p-button-icon-left, .p-button.accent .p-button-icon-left { margin-right: 8px !important; }
+.p-button.action .p-button-label, .p-button.accent .p-button-label { padding: 0 10px !important; }
+.p-button.secondary { background: transparent !important; border-color: var(--border) !important; color: var(--text-muted) !important; }
+.p-button.logout { background: transparent !important; border-color: var(--border) !important; color: var(--text) !important; }
+.p-button:hover { filter: brightness(1.06); }
+
+/* Paginator */
+.p-paginator { background: var(--surface); border-top: 1px solid var(--border); }
+.p-paginator .p-dropdown { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
 
 

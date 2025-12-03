@@ -1,18 +1,34 @@
-<div class="login-container" [style.backgroundImage]="'url(' + backgroundImage + ')'">
-  <div class="login-card">
-    <div class="logo">
-      <img src="assets/logo.png" alt="Makeup Beauty Logo">
+<div class="login-wrapper">
+  <div class="bg-gradient"></div>
+  <div class="login-card card">
+    <div class="brand">Sensority</div>
+    <h2>Bienvenido</h2>
+    <p class="subtitle">Accede para visualizar el panel</p>
+
+    <div class="form">
+      <div class="field-group">
+        <span class="pi pi-envelope icon"></span>
+        <input pInputText type="email" placeholder="Correo electrónico" class="field" />
+      </div>
+      <div class="field-group">
+        <span class="pi pi-lock icon"></span>
+        <input pPassword [feedback]="false" placeholder="Contraseña" class="field" />
+      </div>
+      <button
+        pButton
+        type="button"
+        label="Iniciar sesión"
+        icon="pi pi-sign-in"
+        [size]="'large'"
+        [rounded]="true"
+        severity="primary"
+        [raised]="true"
+        class="action"
+        [style]="{ background: 'linear-gradient(180deg, #6d79ff, #5b66e8)', borderColor: 'var(--accent)', color: '#fff' }"
+        (click)="onLogin()"
+      ></button>
     </div>
-    <h2 class="welcome-text">Bienvenid&#64; ✨</h2>
-    <form>
-      <div class="input-field">
-        <input pInputText type="text" placeholder="Correo electrónico" />
-      </div>
-      <div class="input-field">
-        <input pInputText type="password" placeholder="Contraseña" />
-      </div>
-      <p-button label="Iniciar Sesión" styleClass="login-btn"></p-button>
-      <p class="register-link">¿No tienes cuenta? <a href="/auth/register">Regístrate aquí</a></p>
-    </form>
+
+    <p class="hint">Login demostrativo — te llevaremos al panel inmediatamente.</p>
   </div>
 </div>

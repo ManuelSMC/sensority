@@ -61,7 +61,8 @@ export class FooterComponent {
       life: 7000
     });
     setTimeout(() => {
-      this.router.navigate(['/auth/login']);
+      // Sitio estático: llevar al homepage
+      this.router.navigate(['/homepage']);
     }, 1000);
   }
 }

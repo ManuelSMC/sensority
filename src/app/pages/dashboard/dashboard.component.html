@@ -1,0 +1,128 @@
+<div class="dashboard">
+  <div class="topbar">
+    <div class="brand">Sensority</div>
+    <div class="actions">
+      <button class="chip">Lecturas</button>
+      <button class="chip alt">Resumen</button>
+      <button pButton label="Cerrar sesión" class="logout" (click)="logout()"></button>
+    </div>
+  </div>
+
+  <header class="hero card">
+    <div>
+      <h1>Panel de Datos Ambientales</h1>
+      <p>Visualización estática de temperatura y humedad capturadas por el backend.</p>
+    </div>
+  </header>
+
+  <section class="filters card">
+    <div class="filters-row">
+      <div class="field">
+        <label for="dateRange">Rango de fechas</label>
+        <p-calendar
+          [(ngModel)]="dateRange"
+          [selectionMode]="'range'"
+          [showIcon]="true"
+          [appendTo]="'body'"
+          [panelStyle]="{ background: '#171b2b', border: '1px solid #2a3046', boxShadow: '0 10px 30px rgba(0,0,0,0.35)' }"
+          panelStyleClass="dark-overlay"
+          inputId="dateRange"
+          dateFormat="dd/mm/yy"
+          placeholder="Selecciona inicio y fin"
+        ></p-calendar>
+      </div>
+      <div class="field actions">
+        <button pButton label="Aplicar" (click)="applyFilter()"></button>
+        <button pButton label="Reset" class="secondary" (click)="resetFilter()"></button>
+        <button
+          pButton
+          label="Exportar CSV"
+          icon="pi pi-download"
+          [rounded]="true"
+          severity="primary"
+          [raised]="true"
+          class="accent"
+          (click)="exportCSV()"
+        ></button>
+        <div class="iot-dial" [class.loading]="generating" (click)="generateNewInterval()" role="button" aria-label="Generar nuevo intervalo IoT">
+          <div class="dial-circle">
+            <svg viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="54" class="track"></circle>
+              <circle cx="60" cy="60" r="54" class="progress" [attr.stroke-dasharray]="339" [attr.stroke-dashoffset]="dialDashoffset"></circle>
+            </svg>
+            <div class="center">
+              <div class="title">Intervalo</div>
+              <div class="value" [class.flip]="flipAnim">{{ iotInterval }}<span class="unit">s</span></div>
+            </div>
+          </div>
+          <div class="controls">
+            <span class="tip">Toca para barajar entre 4–60s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Filtra por fecha local; UTC mostrado en la tabla para referencia.</p>
+  </section>
+
+  <section class="stats">
+    <div class="card stat">
+      <div class="stat-label">Temperatura promedio</div>
+      <div class="stat-value">{{ avgTemp }} °C</div>
+    </div>
+    <div class="card stat">
+      <div class="stat-label">Humedad promedio</div>
+      <div class="stat-value">{{ avgHum }} %</div>
+    </div>
+  </section>
+
+  <section class="charts">
+    <div class="card chart">
+      <div class="chart-header">Temperatura</div>
+      <div class="chart-body">
+        <canvas baseChart [data]="tempChartData" [options]="chartOptions"></canvas>
+      </div>
+    </div>
+    <div class="card chart">
+      <div class="chart-header">Humedad</div>
+      <div class="chart-body">
+        <canvas baseChart [data]="humChartData" [options]="chartOptions"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="table card">
+    <div class="table-header">
+      <h2>Lecturas recientes</h2>
+      <div class="legend">
+        <span class="dot temp"></span> Temp
+        <span class="dot hum"></span> Hum
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Temperatura (°C)</th>
+          <th>Humedad (%)</th>
+          <th>Hora local</th>
+          <th>UTC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of pagedReadings">
+          <td>{{ r.temp }}</td>
+          <td>{{ r.hum }}</td>
+          <td>{{ r.timestamp_local }}</td>
+          <td><code>{{ r.timestamp_utc }}</code></td>
+        </tr>
+      </tbody>
+    </table>
+    <p-paginator
+      [rows]="rows"
+      [totalRecords]="totalRecords"
+      [first]="first"
+      [rowsPerPageOptions]="[10,25,50,100]"
+      [dropdownAppendTo]="'body'"
+      (onPageChange)="onPageChange($event)"
+    ></p-paginator>
+  </section>
+</div>
