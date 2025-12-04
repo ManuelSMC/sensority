@@ -18,18 +18,18 @@
   <section class="filters card">
     <div class="filters-row">
       <div class="field">
-        <label for="dateRange">Rango de fechas</label>
-        <p-calendar
-          [(ngModel)]="dateRange"
-          [selectionMode]="'range'"
-          [showIcon]="true"
-          [appendTo]="'body'"
-          [panelStyle]="{ background: '#171b2b', border: '1px solid #2a3046', boxShadow: '0 10px 30px rgba(0,0,0,0.35)' }"
-          panelStyleClass="dark-overlay"
-          inputId="dateRange"
-          dateFormat="dd/mm/yy"
-          placeholder="Selecciona inicio y fin"
-        ></p-calendar>
+        <label>Rango de fechas</label>
+        <div class="date-range">
+          <div class="date-input">
+            <span class="label">Inicio</span>
+            <input type="date" [(ngModel)]="startDate" />
+          </div>
+          <span class="dash">—</span>
+          <div class="date-input">
+            <span class="label">Fin</span>
+            <input type="date" [(ngModel)]="endDate" />
+          </div>
+        </div>
       </div>
       <div class="field actions">
         <button pButton label="Aplicar" (click)="applyFilter()"></button>
@@ -44,21 +44,6 @@
           class="accent"
           (click)="exportCSV()"
         ></button>
-        <div class="iot-dial" [class.loading]="generating" (click)="generateNewInterval()" role="button" aria-label="Generar nuevo intervalo IoT">
-          <div class="dial-circle">
-            <svg viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="54" class="track"></circle>
-              <circle cx="60" cy="60" r="54" class="progress" [attr.stroke-dasharray]="339" [attr.stroke-dashoffset]="dialDashoffset"></circle>
-            </svg>
-            <div class="center">
-              <div class="title">Intervalo</div>
-              <div class="value" [class.flip]="flipAnim">{{ iotInterval }}<span class="unit">s</span></div>
-            </div>
-          </div>
-          <div class="controls">
-            <span class="tip">Toca para barajar entre 4–60s</span>
-          </div>
-        </div>
       </div>
     </div>
     <p class="hint">Filtra por fecha local; UTC mostrado en la tabla para referencia.</p>
@@ -91,6 +76,7 @@
   </section>
 
   <section class="table card">
+    <div class="table-inner">
     <div class="table-header">
       <h2>Lecturas recientes</h2>
       <div class="legend">
@@ -116,13 +102,24 @@
         </tr>
       </tbody>
     </table>
-    <p-paginator
-      [rows]="rows"
-      [totalRecords]="totalRecords"
-      [first]="first"
-      [rowsPerPageOptions]="[10,25,50,100]"
-      [dropdownAppendTo]="'body'"
-      (onPageChange)="onPageChange($event)"
-    ></p-paginator>
+    <div class="paginator">
+      <button class="pg-btn edge" (click)="goToPage(1)" [disabled]="currentPage === 1">«</button>
+      <button class="pg-btn" (click)="prevPage()" [disabled]="currentPage === 1">‹</button>
+
+      <div class="pg-pages">
+        <button
+          *ngFor="let p of getPageNumbers()"
+          class="pg-number"
+          [class.active]="p === currentPage"
+          (click)="goToPage(p)"
+        >{{ p }}</button>
+      </div>
+
+      <button class="pg-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">›</button>
+      <button class="pg-btn edge" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">»</button>
+
+      <span class="pg-info">Página {{ currentPage }} de {{ totalPages }}</span>
+    </div>
+    </div>
   </section>
 </div>

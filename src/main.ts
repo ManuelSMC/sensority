@@ -3,6 +3,7 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router'; // Impor
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideHttpClient } from '@angular/common/http';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -12,6 +13,7 @@ bootstrapApplication(AppComponent, {
         scrollPositionRestoration: 'top'
       })
     ),
-    provideAnimations()
+    provideAnimations(),
+    provideHttpClient()
   ]
 }).catch(err => console.error(err));

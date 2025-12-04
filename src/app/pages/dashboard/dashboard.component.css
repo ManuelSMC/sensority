@@ -20,6 +20,14 @@
 .filters .accent{background:var(--accent);border-color:var(--accent)}
 .filters .hint{margin-top:8px;color:var(--text-muted);font-size:12px}
 
+/* Custom date range styling */
+.date-range{display:flex;align-items:center;gap:12px;background:linear-gradient(180deg, var(--surface), var(--surface-2));padding:12px;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px var(--shadow)}
+.date-input{display:flex;flex-direction:column;gap:6px}
+.date-input .label{font-size:12px;color:var(--text-muted)}
+.date-input input[type="date"]{background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:10px;outline:none;transition:border-color .15s ease, box-shadow .15s ease}
+.date-input input[type="date"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(93,105,255,.25)}
+.dash{color:var(--text-muted);font-weight:700}
+
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:16px 0 24px}
 .stat{padding:20px}
 .stat-label{color:var(--text-muted);font-size:14px;margin-bottom:6px}
@@ -40,33 +48,25 @@
 .table table{width:100%}
 .table thead{background:var(--surface)}
 .table th,.table td{text-align:left}
-.table p-paginator{display:block;padding:8px 12px}
+.paginator{display:flex;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--surface)}
+.table table{width:100%;display:block;overflow-x:auto;white-space:nowrap}
+.pg-btn{background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:10px;box-shadow:0 6px 16px rgba(0,0,0,.25);transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease}
+.pg-btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(0,0,0,.35);border-color:var(--accent)}
+.pg-btn:disabled{opacity:.5;cursor:not-allowed}
+.pg-btn.edge{background:linear-gradient(180deg, var(--surface-2), #1a2034)}
+.pg-pages{display:flex;gap:6px;margin:0 8px}
+.pg-number{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:6px 10px;border-radius:8px;transition:all .15s ease}
+.pg-number:hover{border-color:var(--accent);color:#fff;background:rgba(109,121,255,.15)}
+.pg-number.active{background:linear-gradient(180deg, var(--accent), #5b66e8);border-color:var(--accent);color:#fff;box-shadow:0 10px 26px rgba(93,105,255,.35)}
+.pg-info{margin-left:auto;color:var(--text-muted)}
+.pg-size{color:var(--text-muted)}
 
 /* Ensure PrimeNG buttons render with our dark theme when in this component */
 ::ng-deep .p-button.accent { background: linear-gradient(180deg, var(--accent), #5b66e8) !important; border-color: var(--accent) !important; color: #fff !important; }
 ::ng-deep .p-button.secondary { background: transparent !important; border-color: var(--border) !important; color: var(--text-muted) !important; }
 ::ng-deep .p-button.logout { background: transparent !important; border-color: var(--border) !important; color: var(--text) !important; }
 
-/* IoT Interval button styling */
-/* Custom IoT control (non-PrimeNG) */
-.iot-dial { display:flex; align-items:center; gap:12px; padding:8px 12px; border-radius:12px; background: linear-gradient(180deg, var(--surface), var(--surface-2)); border:1px solid var(--border); box-shadow:0 8px 24px var(--shadow); cursor:pointer; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; flex:0 0 auto }
-.iot-dial:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(0,0,0,.4); border-color: var(--accent); }
-.iot-dial.loading { pointer-events:none; opacity:.95; }
-.iot-dial .dial-circle { position:relative; width:56px; height:56px; }
-.iot-dial .dial-circle svg { width:56px; height:56px; transform: rotate(-90deg); }
-.iot-dial .dial-circle .track { fill:none; stroke: rgba(255,255,255,0.06); stroke-width: 8; }
-.iot-dial .dial-circle .progress { fill:none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset .3s ease; }
-.iot-dial .dial-circle .center { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-.iot-dial .title { font-size:11px; color: var(--text-muted); }
-.iot-dial .value { font-size:16px; font-weight:700; }
-.iot-dial .value .unit { font-size:12px; margin-left:2px; color: var(--text-muted); }
-.iot-dial .controls { display:flex; align-items:center; }
-.iot-dial .tip { font-size:11px; color: var(--text-muted); }
-
-/* flip animation for value */
-.iot-dial .value { perspective: 300px; }
-.iot-dial .value.flip { animation: flipNum .3s ease; }
-@keyframes flipNum { 0% { transform: rotateX(0deg); } 50% { transform: rotateX(90deg); opacity:.8; } 100% { transform: rotateX(0deg); opacity:1; } }
+/* Removed IoT dial styles */
 
 .card{transition:transform .2s ease, box-shadow .2s ease}
 .card:hover{transform:translateY(-2px); box-shadow:0 14px 36px rgba(0,0,0,.4)}
@@ -81,4 +81,18 @@
 	.stat{padding:16px}
 	.stat-value{font-size:24px}
 	.chart-body{height:200px}
+	.table table{white-space:normal}
+	.table td code{white-space:nowrap}
+}
+
+/* Full-bleed table on desktop: extend to viewport edges */
+@media (min-width: 1024px){
+	.table{margin-left:-24px;margin-right:-24px;width:calc(100% + 48px)}
+	/* Stretch columns to occupy full width */
+	.table table{display:table;table-layout:fixed;width:100%;overflow-x:visible;white-space:normal}
+	.table th, .table td{width:auto}
+	.table thead tr th:nth-child(1), .table tbody tr td:nth-child(1){width:25%}
+	.table thead tr th:nth-child(2), .table tbody tr td:nth-child(2){width:25%}
+	.table thead tr th:nth-child(3), .table tbody tr td:nth-child(3){width:25%}
+	.table thead tr th:nth-child(4), .table tbody tr td:nth-child(4){width:25%}
 }

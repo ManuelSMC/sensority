@@ -2,36 +2,31 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { ChartConfiguration, ChartOptions, Chart, registerables } from 'chart.js';
-import { CalendarModule } from 'primeng/calendar';
+// Removed PrimeNG calendar; using custom date inputs
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
-import { PaginatorModule } from 'primeng/paginator';
 import { Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { TelemetryService } from '../../shared/telemetry.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgChartsModule, CalendarModule, ButtonModule, PaginatorModule],
+  imports: [CommonModule, FormsModule, NgChartsModule, ButtonModule, HttpClientModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent {
-  readings = [
-    { temp: 26, hum: 43, timestamp_local: '20/11/2025, 9:14:39 p.m.', timestamp_utc: '2025-11-21T03:14:39.000Z' },
-    { temp: 26, hum: 43, timestamp_local: '20/11/2025, 9:14:28 p.m.', timestamp_utc: '2025-11-21T03:14:28.000Z' },
-    { temp: 26, hum: 43, timestamp_local: '20/11/2025, 9:14:17 p.m.', timestamp_utc: '2025-11-21T03:14:17.000Z' },
-    { temp: 26, hum: 43, timestamp_local: '20/11/2025, 9:14:06 p.m.', timestamp_utc: '2025-11-21T03:14:06.000Z' },
-    { temp: 26, hum: 42, timestamp_local: '20/11/2025, 9:13:55 p.m.', timestamp_utc: '2025-11-21T03:13:55.000Z' },
-    { temp: 26, hum: 42, timestamp_local: '20/11/2025, 9:13:44 p.m.', timestamp_utc: '2025-11-21T03:13:44.000Z' }
-  ];
+  readings: Array<{ temp: number; hum: number; timestamp_local: string; timestamp_utc: string }> = [];
 
   filteredReadings = [...this.readings];
   pagedReadings = [...this.filteredReadings];
   totalRecords = this.filteredReadings.length;
   first = 0; // index of the first record for paginator
-  rows = 10;
-  dateRange: Date[] | null = null;
+  rows = 25;
+  startDate: string | null = null; // format: YYYY-MM-DD
+  endDate: string | null = null;   // format: YYYY-MM-DD
 
   tempChartData: ChartConfiguration['data'] = { labels: [], datasets: [] };
   humChartData: ChartConfiguration['data'] = { labels: [], datasets: [] };
@@ -49,7 +44,7 @@ export class DashboardComponent {
     },
     scales: {
       x: {
-        ticks: { color: '#a0a8bd' },
+        ticks: { color: '#a0a8bd', maxRotation: 0, autoSkip: true, maxTicksLimit: 8 },
         grid: { color: '#2a3046' }
       },
       y: {
@@ -59,43 +54,9 @@ export class DashboardComponent {
     }
   };
 
-  // UI-only IoT interval demo (random 4-60)
-  iotInterval = 15;
-  generating = false;
-  flipAnim = false;
-  dialDashoffset = 0;
-  private readonly dialCircumference = 339; // must match SVG dasharray
-
-  generateNewInterval() {
-    if (this.generating) return;
-    this.generating = true;
-    this.flipAnim = true;
-    const target = Math.floor(Math.random() * (60 - 4 + 1)) + 4;
-    // simple animated tween + dial update
-    const start = this.iotInterval;
-    const steps = 20;
-    let current = 0;
-
-    const updateDial = () => {
-      const normalized = (this.iotInterval - 4) / (60 - 4);
-      const progress = Math.max(0, Math.min(1, normalized));
-      this.dialDashoffset = this.dialCircumference * (1 - progress);
-    };
-
-    const tick = () => {
-      current++;
-      this.iotInterval = Math.round(start + (target - start) * (current / steps));
-      updateDial();
-      if (current < steps) {
-        setTimeout(tick, 30);
-      } else {
-        this.generating = false;
-        setTimeout(() => { this.flipAnim = false; }, 150);
-      }
-    };
-    updateDial();
-    tick();
-  }
+  // Manual pagination state
+  currentPage = 1;
+  totalPages = 1;
 
   get avgTemp(): number {
     return Number((this.filteredReadings.reduce((s, r) => s + r.temp, 0) / this.filteredReadings.length).toFixed(2));
@@ -105,24 +66,43 @@ export class DashboardComponent {
     return Number((this.filteredReadings.reduce((s, r) => s + r.hum, 0) / this.filteredReadings.length).toFixed(2));
   }
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private telemetry: TelemetryService) {}
 
   ngOnInit() {
     Chart.register(...registerables);
-    this.updateCharts();
-    this.updatePaged();
-    // initialize dial offset
-    const normalized = (this.iotInterval - 4) / (60 - 4);
-    const progress = Math.max(0, Math.min(1, normalized));
-    this.dialDashoffset = this.dialCircumference * (1 - progress);
+    this.loadInitialData();
+  }
+
+  private loadInitialData() {
+    // cargar últimos 20 para gráficas
+    this.telemetry.getLatest(20).subscribe(({ items }) => {
+      // Mantener orden por timestamp_local tal como viene (desc)
+      this.readings = items;
+      this.filteredReadings = [...this.readings];
+      this.totalRecords = this.filteredReadings.length;
+      this.updateCharts();
+      this.updatePaged();
+    });
+
+    // cargar primera página para tabla con tamaño fijo 25
+    this.telemetry.getPage(1, 25).subscribe(({ items, total }) => {
+      // usar datos paginados para la tabla; mantener filteredReadings sincronizado con página
+      this.filteredReadings = items;
+      this.totalRecords = total;
+      this.first = 0;
+      this.rows = 25;
+      this.currentPage = 1;
+      this.totalPages = Math.max(1, Math.ceil(total / this.rows));
+      this.updatePaged();
+    });
   }
 
   applyFilter() {
-    if (!this.dateRange || this.dateRange.length < 2) {
+    if (!this.startDate || !this.endDate) {
       this.filteredReadings = [...this.readings];
     } else {
-      const start = new Date(this.dateRange[0]).getTime();
-      const end = new Date(this.dateRange[1]).getTime();
+      const start = new Date(this.startDate + 'T00:00:00').getTime();
+      const end = new Date(this.endDate + 'T23:59:59').getTime();
       this.filteredReadings = this.readings.filter(r => {
         const t = new Date(r.timestamp_utc).getTime();
         return t >= start && t <= end;
@@ -135,7 +115,8 @@ export class DashboardComponent {
   }
 
   resetFilter() {
-    this.dateRange = null;
+    this.startDate = null;
+    this.endDate = null;
     this.filteredReadings = [...this.readings];
     this.first = 0;
     this.totalRecords = this.filteredReadings.length;
@@ -157,9 +138,14 @@ export class DashboardComponent {
   }
 
   private updateCharts() {
-    const labels = this.filteredReadings.map(r => r.timestamp_local);
-    const tempData = this.filteredReadings.map(r => r.temp);
-    const humData = this.filteredReadings.map(r => r.hum);
+    // Graficas deben mostrar los últimos 20 registros, usando etiquetas compactas (HH:mm)
+    const latest20 = this.readings.slice(0, 20);
+    const labels = latest20.map(r => {
+      const t = new Date(r.timestamp_utc);
+      return t.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+    });
+    const tempData = latest20.map(r => r.temp);
+    const humData = latest20.map(r => r.hum);
 
     this.tempChartData = {
       labels,
@@ -191,15 +177,33 @@ export class DashboardComponent {
   }
 
   private updatePaged() {
-    const startIndex = this.first;
-    const endIndex = startIndex + this.rows;
-    this.pagedReadings = this.filteredReadings.slice(startIndex, endIndex);
+    // Server-side pagination: items already represent the current page
+    this.pagedReadings = this.filteredReadings;
   }
 
-  onPageChange(event: any) {
-    this.first = event.first;
-    this.rows = event.rows;
-    this.updatePaged();
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.first = 0; // keep 0 for server-side pages
+    this.telemetry.getPage(page, this.rows).subscribe(({ items, total }) => {
+      this.filteredReadings = items;
+      this.totalRecords = total;
+      this.totalPages = Math.max(1, Math.ceil(total / this.rows));
+      this.updatePaged();
+    });
+  }
+
+  prevPage() { this.goToPage(this.currentPage - 1); }
+  nextPage() { this.goToPage(this.currentPage + 1); }
+
+  getPageNumbers(): number[] {
+    const windowSize = 3; // show up to 3 page numbers centered
+    const pages: number[] = [];
+    const start = Math.max(1, this.currentPage - Math.floor(windowSize / 2));
+    const end = Math.min(this.totalPages, start + windowSize - 1);
+    const adjustedStart = Math.max(1, end - windowSize + 1);
+    for (let p = adjustedStart; p <= end; p++) pages.push(p);
+    return pages;
   }
 
   logout() {

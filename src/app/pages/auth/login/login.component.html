@@ -8,27 +8,19 @@
     <div class="form">
       <div class="field-group">
         <span class="pi pi-envelope icon"></span>
-        <input pInputText type="email" placeholder="Correo electrónico" class="field" />
+        <input pInputText type="email" [(ngModel)]="email" placeholder="Correo electrónico" class="field" />
       </div>
       <div class="field-group">
         <span class="pi pi-lock icon"></span>
-        <input pPassword [feedback]="false" placeholder="Contraseña" class="field" />
+        <input pPassword [feedback]="false" [(ngModel)]="password" placeholder="Contraseña" class="field" />
       </div>
-      <button
-        pButton
-        type="button"
-        label="Iniciar sesión"
-        icon="pi pi-sign-in"
-        [size]="'large'"
-        [rounded]="true"
-        severity="primary"
-        [raised]="true"
-        class="action"
-        [style]="{ background: 'linear-gradient(180deg, #6d79ff, #5b66e8)', borderColor: 'var(--accent)', color: '#fff' }"
-        (click)="onLogin()"
-      ></button>
+      <div class="error" *ngIf="error">{{ error }}</div>
+      <button type="button" class="btn-primary" (click)="onLogin()">
+        <span class="pi pi-sign-in"></span>
+        <span>Iniciar sesión</span>
+      </button>
     </div>
 
-    <p class="hint">Login demostrativo — te llevaremos al panel inmediatamente.</p>
+    <p class="hint">Usuarios demo: admin&#64;sensity.io / Admin123! | operador&#64;sensity.io / Operador123!</p>
   </div>
 </div>
