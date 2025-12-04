@@ -19,7 +19,7 @@ interface PageResult {
 @Injectable({ providedIn: 'root' })
 export class TelemetryService {
   // Ajusta la URL base según el backend (env var o constante)
-  private baseUrl = (window as any).API_BASE_URL || 'https://proyecto-esp.vercel.app/';
+  private baseUrl = (window as any).API_BASE_URL || 'https://proyecto-esp.vercel.app';
 
   constructor(private http: HttpClient) {}
 
